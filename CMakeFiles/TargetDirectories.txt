@@ -1,0 +1,5 @@
+C:/Users/elkanam/Documents/RT_Embedded_Linux/Arm_Embedded_courcse/vscode/nucleo_f411_blincky2/f756_rtos_dispacher_RT/CMakeFiles/f756_rtos_dispacher_RT.dir
+C:/Users/elkanam/Documents/RT_Embedded_Linux/Arm_Embedded_courcse/vscode/nucleo_f411_blincky2/f756_rtos_dispacher_RT/CMakeFiles/edit_cache.dir
+C:/Users/elkanam/Documents/RT_Embedded_Linux/Arm_Embedded_courcse/vscode/nucleo_f411_blincky2/f756_rtos_dispacher_RT/CMakeFiles/rebuild_cache.dir
+C:/Users/elkanam/Documents/RT_Embedded_Linux/Arm_Embedded_courcse/vscode/nucleo_f411_blincky2/f756_rtos_dispacher_RT/cmake/stm32cubemx/CMakeFiles/edit_cache.dir
+C:/Users/elkanam/Documents/RT_Embedded_Linux/Arm_Embedded_courcse/vscode/nucleo_f411_blincky2/f756_rtos_dispacher_RT/cmake/stm32cubemx/CMakeFiles/rebuild_cache.dir

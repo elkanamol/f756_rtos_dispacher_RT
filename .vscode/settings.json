@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.adef": "c",
+        "dispatcher.h": "c",
+        "event_managment.h": "c",
+        "ambulance.h": "c",
+        "police.h": "c",
+        "stdio.h": "c",
+        "fire.h": "c",
+        "corona.h": "c"
+    }
+}

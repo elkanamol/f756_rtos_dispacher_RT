@@ -1,0 +1,48 @@
+# VSCode specific
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Build outputs
+build/
+[Dd]ebug/
+[Rr]elease/
+*.o
+*.d
+*.crf
+*.htm
+*.dep
+*.map
+*.bak
+*.lnp
+*.lst
+*.out
+*.hex
+*.bin
+
+# STM32 generated files
+.mxproject
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.orig
+
+# Log files
+*.log
+
+# Object files and libraries
+*.lib
+*.a
+*.so
+*.dll
+
+# Keep source files and project configuration
+!Drivers/
+!Middlewares/

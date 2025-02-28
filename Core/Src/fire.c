@@ -1,0 +1,66 @@
+/* fire_fighter.c */
+
+#include "fire.h"
+#include <stdio.h>
+
+QueueHandle_t xFireFighterQueue = NULL;
+
+/**
+ * @brief Task function for a fire fighter car.
+ * 
+ * This task function is responsible for handling fire events received from the fire fighter queue.
+ * It receives an event, simulates handling the event by delaying for a random amount of time,
+ * and then prints a message indicating that the event has been handled.
+ * 
+ * @param pvParameters The ID of the fire fighter car, passed as a void pointer.
+ */
+void vFireCarTask(void *pvParameters)
+{
+    uint8_t carID = (uint8_t)(uintptr_t)pvParameters;
+    EventMassage_t recievedEvent;
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+
+    for(;;)
+    {
+        if (xQueueReceive(xFireFighterQueue, &recievedEvent, portMAX_DELAY) == pdTRUE)
+        {
+            printf("Fire fighter car %d received event %d\n"
+                 ,carID
+                 , recievedEvent.eventCode);
+            TickType_t handlingTime = ((HAL_RNG_GetRandomNumber(&hrng) % DELADY_RANDOM_LIMIT) + 1) * TIME_FOR_DELAY;
+            vTaskDelayUntil(&xLastWakeTime, handlingTime);
+            printf("FireFighter Car %d done in %lu Ticks\n", carID, (unsigned long)handlingTime);
+        }
+        vTaskDelay(1);
+    }
+}
+
+/**
+ * @brief Starts the fire fighter task.
+ *
+ * This function creates a queue for fire events and spawns a number of fire fighter car tasks.
+ * Each fire fighter car task receives fire events from the queue, simulates handling the event,
+ * and prints a message indicating that the event has been handled.
+ *
+ * @param uxPriority The priority at which the fire fighter car tasks should run.
+ */
+void vStartFireFighterTask(UBaseType_t uxPriority)
+{
+    xFireFighterQueue = xQueueCreate(FIREFIGHTER_QUEUE_LENGTH, sizeof(EventMassage_t));
+    if(xFireFighterQueue == NULL)
+    {
+        printf("Error creating fire fighter queue\n");
+    }
+
+    for (uint8_t i = 0; i < NUM_FIRE_TRUCKS; i++)
+    {
+        char taskName[16];
+        sprintf(taskName, "FireCar%d", i);
+        BaseType_t xTaskRetVal = xTaskCreate(vFireCarTask, taskName, DEPART_TASK_STACK_SIZE, (void *)(uintptr_t)i, uxPriority, NULL);
+        if (xTaskRetVal != pdPASS)
+        {
+            printf("Error creating task %s\n", taskName);
+        }
+    }
+
+}
