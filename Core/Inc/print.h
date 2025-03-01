@@ -14,7 +14,7 @@
 /**
  * @brief Represents a print message to be sent to the print queue.
  *
- * This structure holds the buffer containing the message to be printed, as well as the length
+ * This structure holds the `buffer` containing the message to be printed, as well as the length
  * of the message. It is used to pass print messages between the application and the print task.
  */
 typedef struct

@@ -53,7 +53,10 @@ static void vAmbulanceCarTask(void *pvParameters)
 BaseType_t xStartAmbulanceTask(UBaseType_t uxPriority)
 {
     BaseType_t xReturn = pdPASS;
-    
+    if (uxPriority > configMAX_PRIORITIES - 1)
+    {
+        return pdFAIL;
+    }
     xAmbulanceQueue = xQueueCreate(AMBULANCE_QUEUE_LENGTH, sizeof(EventMassage_t));
     if (xAmbulanceQueue == NULL)
     {
@@ -79,6 +82,10 @@ BaseType_t xStartAmbulanceTask(UBaseType_t uxPriority)
             break;
         }
     }
-
+    if (xReturn == pdFAIL)
+    {
+        vQueueDelete(xAmbulanceQueue);
+        xAmbulanceQueue = NULL;
+    }
     return xReturn;
 }

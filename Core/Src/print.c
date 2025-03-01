@@ -9,19 +9,20 @@
 
 #include "print.h"
 
-#include "FreeRTOS.h"
-#include "semphr.h"
+// #include "FreeRTOS.h"
+// #include "semphr.h"
 
-/* USER CODE BEGIN 0 */
-  // this is thread safe impllementation of printf and scanf ussing UART3.
-  // this is works only if using with freeRTOS and UART3. 
-  // you need to call print_init() before using printf and scanf.
+// this is thread safe impllementation of printf and scanf ussing UART3.
+// this is works only if using with freeRTOS and UART3. 
+// you need to call print_init() before using printf and scanf.
 
   // replace your uart handle with your uart handle.
   extern UART_HandleTypeDef huart3;
 
   QueueHandle_t xPrintQueue = NULL;     // Queue for printing messages
   TaskHandle_t xPrintTaskHandle = NULL; // Handle for the print task
+
+#define PRINT_QUEUE_TIMEOUT_TICKS 10
 
   /**
    * @brief The print task that handles sending print messages to the UART.
@@ -66,6 +67,11 @@
    */
   BaseType_t xPrintInit(UBaseType_t uxPriority)
   {
+      if (uxPriority > configMAX_PRIORITIES - 1)
+      {
+          printf("Error: Invalid priority\n");
+          return pdFAIL;
+      }
       BaseType_t xReturn = pdPASS;
 
       xPrintQueue = xQueueCreate(PRINT_QUEUE_SIZE, sizeof(PrintMessage_t));
@@ -85,6 +91,11 @@
       {
           printf("Error creating print task\n");
           xReturn = pdFAIL;
+      }
+      if (xReturn == pdFAIL)
+      {
+          vQueueDelete(xPrintQueue);
+          xPrintQueue = NULL;
       }
 
       return xReturn;
@@ -144,7 +155,10 @@
       memcpy(message.buffer, ptr, len);
       message.len = len;
 
-      xQueueSend(xPrintQueue, &message, 10);
+      if (xQueueSend(xPrintQueue, &message, PRINT_QUEUE_TIMEOUT_TICKS) != pdPASS)
+      {
+          return 0;
+      }
       return len;
   }
 
@@ -164,6 +178,6 @@
       message.buffer[0] = ch;
       message.len = 1;
 
-      xQueueSend(xPrintQueue, &message, 10);
+      xQueueSend(xPrintQueue, &message, PRINT_QUEUE_TIMEOUT_TICKS);
       return ch;
   }

@@ -36,7 +36,7 @@ void vDispacherTask(void *pvParameters)
         {
             HAL_GPIO_TogglePin(GPIOB, LD2_Pin);
 
-            printf("Event recieved from dispacher queue: %d, %d, %ld\n"
+            printf("Dispacher: Event recieved from dispacher queue: %d, %d, %ld\n"
                 , recievedEvent.eventCode
                 , recievedEvent.eventPriority
                 , recievedEvent.eventTime);
@@ -48,7 +48,7 @@ void vDispacherTask(void *pvParameters)
                     printf("Dispatcher: sent event to police queue\n");
                     break;
                 case EVENT_CODE_AMBULANCE:
-                    xQueueSendToBack(xAmbulanceQueue, &recievedEvent, portMAX_DELAY);
+                    xQueueSend(xAmbulanceQueue, &recievedEvent, portMAX_DELAY);
                     printf("Dispatcher: sent event to ambulance queue\n");
                     break;
                 case EVENT_CODE_FIRE:
@@ -79,6 +79,10 @@ void vDispacherTask(void *pvParameters)
  */
 BaseType_t xStartDispacherTask(UBaseType_t uxPriority)
 {
+    if (uxPriority > configMAX_PRIORITIES - 1)
+    {
+        return pdFAIL;
+    }
     BaseType_t xReturn = pdPASS;
 
     xDispacherQueue = xQueueCreate(DISPACHER_QUEUE_SIZE, sizeof(EventMassage_t));
@@ -100,5 +104,10 @@ BaseType_t xStartDispacherTask(UBaseType_t uxPriority)
         xReturn = pdFAIL;
     }
 
+    if (xReturn == pdFAIL)
+    {
+        vQueueDelete(xDispacherQueue);
+        xDispacherQueue = NULL;
+    }
     return xReturn;
 }

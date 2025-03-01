@@ -25,9 +25,11 @@ extern QueueHandle_t xDispacherQueue;
 void vEventManagementTask(void *pvParameters)
 {
     printf("Event Management Task Started\n");
+
     TickType_t xLastWakeTime = xTaskGetTickCount();
     for(;;)
     {
+        BaseType_t xStasus = pdFALSE;
         HAL_GPIO_TogglePin(GPIOB, LD1_Pin);
         // starting with random delay time of 1-5 seconds
         const TickType_t xDelay = ((HAL_RNG_GetRandomNumber(&hrng) % DELADY_RANDOM_LIMIT) + 1) * portTICK_RATE_MS * TIME_FOR_DELAY;
@@ -47,23 +49,20 @@ void vEventManagementTask(void *pvParameters)
         {
             if (event.eventPriority == PRIORITY_HIGH)
             {
-                xQueueSendToFront(xDispacherQueue, &event, portMAX_DELAY);
-                printf("Event sent to dispacher queue: %d, %d, %ld\n"
-                    ,event.eventCode
-                    , event.eventPriority
-                    , event.eventTime);
-
+                xStasus = xQueueSendToFront(xDispacherQueue, &event, portMAX_DELAY);
             }
             else
             {
-                xQueueSendToBack(xDispacherQueue, &event, portMAX_DELAY);
+                xStasus = xQueueSendToBack(xDispacherQueue, &event, portMAX_DELAY);
+            }
+            if (xStasus == pdTRUE)
+            {
                 printf("Event sent to dispacher queue: %d, %d, %ld\n", event.eventCode, event.eventPriority, event.eventTime);
             }
-            // xQueueSend(xDispacherQueue, &event, 0);
-            // printf("Event sent to dispacher queue: %d, %d, %ld\n"
-            //     , event.eventCode
-            //     , event.eventPriority
-            //     , event.eventTime);
+            else
+            {
+                printf("Error: Failed to send event to dispacher queue\n");
+            }
         }
         vTaskDelay(xDelay);
     }
@@ -80,6 +79,10 @@ void vEventManagementTask(void *pvParameters)
  */
 BaseType_t xStartEventManagementTask(UBaseType_t uxPriority)
 {
+    if (uxPriority > configMAX_PRIORITIES - 1)
+    {
+        return pdFAIL;
+    }
     BaseType_t xReturn = pdPASS;
 
     BaseType_t xTaskRetVal = xTaskCreate(vEventManagementTask,

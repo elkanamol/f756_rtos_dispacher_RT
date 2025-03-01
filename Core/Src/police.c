@@ -53,6 +53,10 @@ static void vPoliceCarTask(void *pvParameters)
  */
 BaseType_t xStartPoliceTask(UBaseType_t uxPriority)
 {
+    if (uxPriority > configMAX_PRIORITIES - 1)
+    {
+        return pdFAIL;
+    }
     BaseType_t xReturn = pdPASS;
     
     xPoliceQueue = xQueueCreate(POLICE_QUEUE_SIZE, sizeof(EventMassage_t));
@@ -79,6 +83,11 @@ BaseType_t xStartPoliceTask(UBaseType_t uxPriority)
             xReturn = pdFAIL;
             break;
         }
+    }
+    if (xReturn == pdFAIL)
+    {
+        vQueueDelete(xPoliceQueue);
+        xPoliceQueue = NULL;
     }
 
     return xReturn;

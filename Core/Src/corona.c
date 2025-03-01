@@ -49,8 +49,12 @@ static void vCoronaCarTask(void *pvParameters)
  */
 BaseType_t xStartCoronaTask(UBaseType_t uxPriority)
 {
+    if (uxPriority > configMAX_PRIORITIES - 1)
+    {
+        return pdFAIL;
+    }
     BaseType_t xReturn = pdPASS;
-    
+
     xCoronaQueue = xQueueCreate(CORONA_QUEUE_LENGTH, sizeof(EventMassage_t));
     if (xCoronaQueue == NULL)
     {
@@ -77,5 +81,10 @@ BaseType_t xStartCoronaTask(UBaseType_t uxPriority)
         }
     }
 
+    if (xReturn == pdFAIL)
+    {
+        vQueueDelete(xCoronaQueue);
+        xCoronaQueue = NULL;
+    }
     return xReturn;
 }

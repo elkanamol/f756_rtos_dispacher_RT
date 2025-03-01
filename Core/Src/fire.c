@@ -5,6 +5,7 @@
 
 QueueHandle_t xFireFighterQueue = NULL;
 
+
 /**
  * @brief Task function for a fire fighter car.
  * 
@@ -48,7 +49,10 @@ void vFireCarTask(void *pvParameters)
 BaseType_t xStartFireFighterTask(UBaseType_t uxPriority)
 {
     BaseType_t xReturn = pdPASS;
-
+    if (uxPriority > configMAX_PRIORITIES - 1)
+    {
+        return pdFAIL;
+    }
     xFireFighterQueue = xQueueCreate(FIREFIGHTER_QUEUE_LENGTH, sizeof(EventMassage_t));
     if(xFireFighterQueue == NULL)
     {
@@ -73,6 +77,11 @@ BaseType_t xStartFireFighterTask(UBaseType_t uxPriority)
             xReturn = pdFAIL;
             break;
         }
+    }
+    if (xReturn == pdFAIL)
+    {
+        vQueueDelete(xFireFighterQueue);
+        xFireFighterQueue = NULL;
     }
 
     return xReturn;
