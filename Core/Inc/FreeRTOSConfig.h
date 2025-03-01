@@ -152,13 +152,9 @@ standard names. */
 #define xPortSysTickHandler SysTick_Handler
 
 /* USER CODE BEGIN Defines */
-#define configCHECK_FOR_STACK_OVERFLOW 2 // Enable stack checking
-// #define configGENERATE_RUN_TIME_STATS 1
-// #define portGET_RUN_TIME_COUNTER_VALUE 1
-#define configUSE_TRACE_FACILITY 1
-// #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS configureTimerForRunTimeStats
-// #define portGET_RUN_TIME_COUNTER_VALUE getRunTimeCounterValue
-  /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
-  /* USER CODE END Defines */
+#define configCHECK_FOR_STACK_OVERFLOW 2  // Enable stack checking
+#define configUSE_TRACE_FACILITY 1        // Enable tracing
+/* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
+/* USER CODE END Defines */
 
 #endif /* FREERTOS_CONFIG_H */

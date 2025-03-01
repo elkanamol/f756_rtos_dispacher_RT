@@ -76,12 +76,23 @@ void vEventManagementTask(void *pvParameters)
  * If the task creation fails, an error message is printed.
  *
  * @param uxPriority The priority at which the Event Management Task should run.
+ * @return pdPASS if the task was created successfully, pdFAIL otherwise.
  */
-void vStartEventManagementTask(UBaseType_t uxPriority)
+BaseType_t xStartEventManagementTask(UBaseType_t uxPriority)
 {
-    BaseType_t xTaskRetVal = xTaskCreate(vEventManagementTask, "EventMnmntTask", DEPART_TASK_STACK_SIZE, NULL, uxPriority, NULL);
+    BaseType_t xReturn = pdPASS;
+
+    BaseType_t xTaskRetVal = xTaskCreate(vEventManagementTask,
+                                         "EventMnmntTask",
+                                         DEPART_TASK_STACK_SIZE,
+                                         NULL,
+                                         uxPriority,
+                                         NULL);
     if (xTaskRetVal != pdPASS)
     {
-        printf("Error creating task EventManagementTask \n");
+        printf("Error creating task EventManagementTask\n");
+        xReturn = pdFAIL;
     }
+
+    return xReturn;
 }

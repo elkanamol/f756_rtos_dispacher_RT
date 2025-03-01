@@ -147,27 +147,31 @@ int main(void)
   // defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
+/* add threads, ... */
 
-  print_init(TASK_DEFAULT_PRIORITY + 1);
-  // // Start the Dispatcher first (so its queue is ready)
-  vStartDispacherTask(TASK_DEFAULT_PRIORITY);
-  printf("Dispacher-------------------------------------\n");
+configASSERT(xPrintInit(TASK_DEFAULT_PRIORITY + 1) == pdPASS);
+printf("------------------------------------------\n");
+// Start the Dispatcher first (so its queue is ready)
+configASSERT(xStartDispacherTask(TASK_DEFAULT_PRIORITY) == pdPASS);
+printf("Dispacher-------------------------------------\n");
 
-  // Start each department
-  vStartPoliceTask(TASK_DEFAULT_PRIORITY);
-  printf("Police-----------------------------------\n");
-  vStartAmbulanceTask(TASK_DEFAULT_PRIORITY);
-  printf("Ambulance----------------------------------\n");
-  vStartFireFighterTask(TASK_DEFAULT_PRIORITY);
-  printf("Fire-------------------------------------\n");
-  vStartCoronaTask(TASK_DEFAULT_PRIORITY);
-  printf("Corona-------------------------------------\n");
+// Start each department
+configASSERT(xStartPoliceTask(TASK_DEFAULT_PRIORITY) == pdPASS);
+printf("Police-----------------------------------\n");
 
-  // Start the Event Management (generates events)
-  vStartEventManagementTask(TASK_DEFAULT_PRIORITY);
-  printf("vStartEventManagementTask-----------------\n");
-  printf("------------------------------------------\n");
+configASSERT(xStartAmbulanceTask(TASK_DEFAULT_PRIORITY) == pdPASS);
+printf("Ambulance----------------------------------\n");
+
+configASSERT(xStartFireFighterTask(TASK_DEFAULT_PRIORITY) == pdPASS);
+printf("Fire-------------------------------------\n");
+
+configASSERT(xStartCoronaTask(TASK_DEFAULT_PRIORITY) == pdPASS);
+printf("Corona-------------------------------------\n");
+
+// Start the Event Management (generates events)
+configASSERT(xStartEventManagementTask(TASK_DEFAULT_PRIORITY) == pdPASS);
+printf("vStartEventManagementTask-----------------\n");
+printf("------------------------------------------\n");
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */

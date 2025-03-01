@@ -43,24 +43,37 @@ void vFireCarTask(void *pvParameters)
  * and prints a message indicating that the event has been handled.
  *
  * @param uxPriority The priority at which the fire fighter car tasks should run.
+ * @return BaseType_t pdPASS if all tasks were created successfully, pdFAIL otherwise.
  */
-void vStartFireFighterTask(UBaseType_t uxPriority)
+BaseType_t xStartFireFighterTask(UBaseType_t uxPriority)
 {
+    BaseType_t xReturn = pdPASS;
+
     xFireFighterQueue = xQueueCreate(FIREFIGHTER_QUEUE_LENGTH, sizeof(EventMassage_t));
     if(xFireFighterQueue == NULL)
     {
         printf("Error creating fire fighter queue\n");
+        return pdFAIL;
     }
 
     for (uint8_t i = 0; i < NUM_FIRE_TRUCKS; i++)
     {
         char taskName[16];
         sprintf(taskName, "FireCar%d", i);
-        BaseType_t xTaskRetVal = xTaskCreate(vFireCarTask, taskName, DEPART_TASK_STACK_SIZE, (void *)(uintptr_t)i, uxPriority, NULL);
+
+        BaseType_t xTaskRetVal = xTaskCreate(vFireCarTask,
+                                             taskName,
+                                             DEPART_TASK_STACK_SIZE,
+                                             (void *)(uintptr_t)i,
+                                             uxPriority,
+                                             NULL);
         if (xTaskRetVal != pdPASS)
         {
             printf("Error creating task %s\n", taskName);
+            xReturn = pdFAIL;
+            break;
         }
     }
 
+    return xReturn;
 }

@@ -69,24 +69,36 @@ void vDispacherTask(void *pvParameters)
     }
 }
 
-
 /**
- * @brief Starts the dispatcher task, which is responsible for receiving events from the dispatcher queue, processing them, and forwarding them to the appropriate queues.
+ * @brief Starts the dispatcher task.
  *
- * This function creates the dispatcher queue, and then creates the dispatcher task with the specified priority.
+ * This function creates the dispatcher queue and the dispatcher task. The dispatcher task is responsible for receiving events from the dispatcher queue, processing them, and forwarding them to the appropriate queues (police, ambulance, fire, or corona).
  *
  * @param uxPriority The priority at which the dispatcher task should run.
+ * @return `pdPASS` if the task was created successfully, `pdFAIL` otherwise.
  */
-void vStartDispacherTask(UBaseType_t uxPriority)
+BaseType_t xStartDispacherTask(UBaseType_t uxPriority)
 {
+    BaseType_t xReturn = pdPASS;
+
     xDispacherQueue = xQueueCreate(DISPACHER_QUEUE_SIZE, sizeof(EventMassage_t));
     if (xDispacherQueue == NULL)
     {
         printf("Error: Failed to create dispacher queue\n");
+        return pdFAIL;
     }
-    BaseType_t xTaskRetVal = xTaskCreate(vDispacherTask, "DispacherTask", DEPART_TASK_STACK_SIZE, NULL, uxPriority, NULL);
+
+    BaseType_t xTaskRetVal = xTaskCreate(vDispacherTask,
+                                         "DispacherTask",
+                                         DEPART_TASK_STACK_SIZE,
+                                         NULL,
+                                         uxPriority,
+                                         NULL);
     if (xTaskRetVal != pdPASS)
     {
         printf("Error creating task DispacherTask\n");
+        xReturn = pdFAIL;
     }
+
+    return xReturn;
 }

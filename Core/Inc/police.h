@@ -13,25 +13,20 @@ extern "C"
 #include "FreeRTOS.h"
 #include "semphr.h"
 
-// Define the queue size and number of police cars
-#define POLICE_QUEUE_SIZE 10
-// Define the number of police cars
-#define NUM_POLICE_CARS 3
+#define POLICE_QUEUE_SIZE 10 // Define the queue size and number of police cars
+#define NUM_POLICE_CARS 3    // Define the number of police cars
 
-/**
- * @brief the queue to receive events from the event queue, declated in common.h
- * 
- */
-extern QueueHandle_t xPoliceQueue;
+    extern QueueHandle_t xPoliceQueue;
 
-/**
- * @brief Starts the police task and creates the police car tasks.
- *
- * This function creates the police queue and then creates a number of police car tasks equal to NUM_POLICE_CARS. Each police car task is given a unique name and is started with the specified priority.
- *
- * @param uxPriority The priority at which the police car tasks should be executed.
- */
-void vStartPoliceTask(UBaseType_t uxPriority);
+    /**
+     * @brief Starts the police task and creates the police queue.
+     *
+     * This function creates the police queue and spawns the police car tasks. It returns the result of the task creation, which can be either `pdPASS` or `pdFAIL`.
+     *
+     * @param uxPriority The priority at which the police car tasks should run.
+     * @return `pdPASS` if the police tasks were created successfully, `pdFAIL` otherwise.
+     */
+    BaseType_t xStartPoliceTask(UBaseType_t uxPriority);
 
 #ifdef __cplusplus
 }

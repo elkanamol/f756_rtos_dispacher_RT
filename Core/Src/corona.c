@@ -45,13 +45,17 @@ static void vCoronaCarTask(void *pvParameters)
  * Each Corona car task is responsible for handling events received from the Corona queue.
  *
  * @param uxPriority The priority at which the Corona car tasks should run.
+ * @return BaseType_t pdPASS if all tasks were created successfully, pdFAIL otherwise.
  */
-void vStartCoronaTask(UBaseType_t uxPriority)
+BaseType_t xStartCoronaTask(UBaseType_t uxPriority)
 {
+    BaseType_t xReturn = pdPASS;
+    
     xCoronaQueue = xQueueCreate(CORONA_QUEUE_LENGTH, sizeof(EventMassage_t));
     if (xCoronaQueue == NULL)
     {
         printf("Error creating corona queue\n");
+        return pdFAIL;
     }
 
     for (int i = 0; i < NUM_CORONA_RESOURCES; i++)
@@ -60,14 +64,18 @@ void vStartCoronaTask(UBaseType_t uxPriority)
         snprintf(taskName, sizeof(taskName), "Corona%d", i);
 
         BaseType_t xTaskRetVal = xTaskCreate(vCoronaCarTask,
-                                             taskName,
-                                             DEPART_TASK_STACK_SIZE,
-                                             (void *)(uintptr_t)i,
-                                             uxPriority,
-                                             NULL);
+                                           taskName,
+                                           DEPART_TASK_STACK_SIZE,
+                                           (void *)(uintptr_t)i,
+                                           uxPriority,
+                                           NULL);
         if (xTaskRetVal != pdPASS)
         {
             printf("Error creating task %s\n", taskName);
+            xReturn = pdFAIL;
+            break;
         }
     }
+
+    return xReturn;
 }

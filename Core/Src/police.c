@@ -44,18 +44,22 @@ static void vPoliceCarTask(void *pvParameters)
 }
 
 /**
- * @brief Starts the police task and creates the police car tasks.
+ * @brief Starts the police task and creates the police queue.
  *
- * This function creates the police queue and then creates a number of police car tasks equal to NUM_POLICE_CARS. Each police car task is given a unique name and is started with the specified priority.
+ * This function creates the police queue and spawns the police car tasks. It returns the result of the task creation, which can be either `pdPASS` or `pdFAIL`.
  *
- * @param uxPriority The priority at which the police car tasks should be executed.
+ * @param uxPriority The priority at which the police car tasks should run.
+ * @return `pdPASS` if the police tasks were created successfully, `pdFAIL` otherwise.
  */
-void vStartPoliceTask(UBaseType_t uxPriority)
+BaseType_t xStartPoliceTask(UBaseType_t uxPriority)
 {
+    BaseType_t xReturn = pdPASS;
+    
     xPoliceQueue = xQueueCreate(POLICE_QUEUE_SIZE, sizeof(EventMassage_t));
     if (xPoliceQueue == NULL)
     {
         printf("Error creating police queue\n");
+        return pdFAIL;
     }
 
     for (uint8_t i = 0; i < NUM_POLICE_CARS; i++)
@@ -63,10 +67,19 @@ void vStartPoliceTask(UBaseType_t uxPriority)
         char taskName[16];
         snprintf(taskName, sizeof(taskName), "PoliceCar%d", i);
 
-        BaseType_t xTaskRetVal = xTaskCreate(vPoliceCarTask, taskName, DEPART_TASK_STACK_SIZE, (void *)(uintptr_t)i, uxPriority, NULL);
+        BaseType_t xTaskRetVal = xTaskCreate(vPoliceCarTask, 
+                                           taskName, 
+                                           DEPART_TASK_STACK_SIZE, 
+                                           (void *)(uintptr_t)i, 
+                                           uxPriority, 
+                                           NULL);
         if (xTaskRetVal != pdPASS)
         {
             printf("Error creating task %s\n", taskName);
+            xReturn = pdFAIL;
+            break;
         }
     }
+
+    return xReturn;
 }

@@ -30,6 +30,7 @@ static void vAmbulanceCarTask(void *pvParameters)
                 , recievedEvent.eventCode);
 
             TickType_t handlingTime = ((HAL_RNG_GetRandomNumber(&hrng) % DELADY_RANDOM_LIMIT) + 1) * TIME_FOR_DELAY;
+            
             vTaskDelayUntil(&xLastWakeTime, handlingTime);
 
             printf("Ambulance Car %d done in %lu Ticks\n", carID, (unsigned long)handlingTime);
@@ -47,27 +48,37 @@ static void vAmbulanceCarTask(void *pvParameters)
  * It then spawns the individual ambulance car tasks, each of which will receive events from the queue and simulate the handling of those events.
  *
  * @param uxPriority The priority at which the ambulance car tasks should be executed.
+ * @return BaseType_t pdPASS if all tasks were created successfully, pdFAIL otherwise.
  */
-void vStartAmbulanceTask(UBaseType_t uxPriority)
+BaseType_t xStartAmbulanceTask(UBaseType_t uxPriority)
 {
+    BaseType_t xReturn = pdPASS;
+    
     xAmbulanceQueue = xQueueCreate(AMBULANCE_QUEUE_LENGTH, sizeof(EventMassage_t));
     if (xAmbulanceQueue == NULL)
     {
         printf("The xAmbulanceQueue cannot create");
-        // return;
+        return pdFAIL;
     }
-        for (uint8_t i = 0; i < NUM_AMBULANCE_CARS; i++)
+
+    for (uint8_t i = 0; i < NUM_AMBULANCE_CARS; i++)
+    {
+        char taskName[16];
+        sprintf(taskName, "AmbulCar%d", i);
+
+        BaseType_t xTaskRetVal = xTaskCreate(vAmbulanceCarTask, 
+                                           taskName, 
+                                           DEPART_TASK_STACK_SIZE, 
+                                           (void *)(uintptr_t)i, 
+                                           uxPriority, 
+                                           NULL);
+        if (xTaskRetVal != pdPASS)
         {
-
-            char taskName[16];
-            sprintf(taskName, "AmbulCar%d", i);
-
-            BaseType_t xTaskRetVal = xTaskCreate(vAmbulanceCarTask, taskName, DEPART_TASK_STACK_SIZE, (void *)(uintptr_t)i, uxPriority, NULL);
-            if (xTaskRetVal != pdPASS)
-            {
-                printf("Error creating task %s\n", taskName);
-            }
+            printf("Error creating task %s\n", taskName);
+            xReturn = pdFAIL;
+            break;
         }
+    }
 
-
+    return xReturn;
 }

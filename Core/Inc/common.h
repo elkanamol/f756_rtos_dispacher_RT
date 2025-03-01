@@ -21,15 +21,29 @@ extern "C"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
+
 #include "main.h"
 #include "stm32f7xx_hal.h"  // Add this include for RNG_HandleTypeDef
 #include "FreeRTOS.h"
 
+
 /**
-  * @brief customs defines for the project
-  * 
-  * @param EVENT_SET_PRIORITY if defined, the event manager will generate random priority
-  */
+ * @brief Defines related to event priority and task priority
+ * 
+ * @define EVENT_SET_PRIORITY If defined, the event manager will generate random priority
+ * @define TASK_DEFAULT_PRIORITY Default priority for all the tasks
+ * 
+ * @brief Defines related to timing and stack size
+ * 
+ * @define TIME_FOR_DELAY Time for delay between the calls, waiting factors etc. in ms, 100 ms
+ * @define STACK_SIZE_TIMES_MINIMAL_STACK_SIZE 2 times the minimal stack size
+ * @define DEPART_TASK_STACK_SIZE 2 times the minimal stack size
+ * 
+ * @brief Defines related to random limits
+ * 
+ * @define DELADY_RANDOM_LIMIT Random delay limit of 1-5 seconds
+ * @define CAR_RANDOM_LIMIT Random car ID limit of 1-4
+ */
 #define EVENT_SET_PRIORITY         // if defined, the event manager will generate random priority
 #define TASK_DEFAULT_PRIORITY 0    // default priority for all the tasks
 
@@ -75,12 +89,9 @@ typedef struct
     TickType_t eventTime;
 } EventMassage_t;
 
-
 /**
-  * @brief rsources structure that holds the resources of the system
-  * 
-  */
-
+ * @brief Holds the resources of the system, including the counts of various emergency vehicles and other resources.
+ */
 typedef struct
 {
     uint8_t ambulanceCount;
@@ -88,9 +99,11 @@ typedef struct
     uint8_t fireCount;      // e.g 2 elements
     uint8_t coronaCount; //e.g 4 elements
     uint8_t barrowCount;    // to complete latter
+
 } ResourceManager_t;
 
-extern RNG_HandleTypeDef hrng;
+
+extern RNG_HandleTypeDef hrng;  // RNG handle for random number generation. set at main.c
 
 #ifdef __cplusplus
 }
