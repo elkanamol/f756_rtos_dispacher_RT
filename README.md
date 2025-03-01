@@ -1,10 +1,11 @@
 # Emergency Services Dispatcher System
 
-Real-time emergency services dispatcher system implemented on STM32F7 using FreeRTOS.
+Real-time emergency services dispatcher system implemented on STM32F7 using FreeRTOS, focusing on robust error handling and FreeRTOS best practices.
+s
 
 ## Overview
 
-This project implements a multi-threaded emergency response system that coordinates different emergency services (Police, Ambulance, Fire Department, and Corona Response) through a central dispatcher. Built on STM32F756ZG using FreeRTOS for real-time task management.
+This project implements a multi-threaded emergency response system that coordinates different emergency services through a central dispatcher. Built on STM32F756ZG using FreeRTOS for real-time task management and CMake for build configuration.
 
 ## Architecture
 
@@ -13,81 +14,102 @@ This project implements a multi-threaded emergency response system that coordina
 - **Event Management**: Generates emergency events with different priorities and types
 - **Central Dispatcher**: Routes events to appropriate emergency services based on event type
 - **Emergency Services**:
-  - Police Department
-  - Ambulance Service  
-  - Fire Department
-  - Corona Response Team
+  - Police Department (Multiple police car tasks)
+  - Ambulance Service (Multiple ambulance car tasks) 
+  - Fire Department (Multiple fire truck tasks)
+  - Corona Response Team (Multiple corona response tasks)
+- **Print Service**: Handles all UART output through a dedicated queue
 
-### Task Structure
+### Source Files Structure
 
-```code
-EventManagement --> Dispatcher --> Emergency Services
-                                    - Police
-                                    - Ambulance
-                                    - Fire
-                                    - Corona
-```
+#### Core/Inc/
+
+- `ambulance.h`: Ambulance service declarations and configurations
+- `common.h`: Shared definitions and constants
+- `corona.h`: Corona response team interface
+- `dispatcher.h`: Central event dispatcher declarations
+- `event_management.h`: Event generation system interface
+- `fire.h`: Fire department service declarations
+- `police.h`: Police service interface
+- `print.h`: UART print service declarations
+
+#### Core/Src/
+
+- `ambulance.c`: Ambulance task and queue management
+- `corona.c`: Corona response task implementation
+- `dispatcher.c`: Event routing and dispatch logic
+- `event_management.c`: Event generation implementation
+- `fire.c`: Fire department task handling
+- `police.c`: Police service implementation
+- `print.c`: Thread-safe print service
+- `main.c`: System initialization and task creation
 
 ## Hardware Requirements
 
 - NUCLEO-F756ZG board
 - ST-Link debugger
-- Serial terminal for monitoring (115200 baud)
+- Serial terminal (115200 baud)
 
 ## Software Requirements
 
-- STM32CubeIDE
-- FreeRTOS
-- STM32F7 HAL drivers
-
-## Key Features
-
-- Real-time event handling and dispatching
-- Priority-based scheduling
-- Multiple concurrent emergency response teams
-- Queue-based communication between components
-- UART-based monitoring and debugging
-
-## Project Structure
-
-```code
-├── Core/
-│   ├── Inc/                    # Header files
-│   └── Src/                    # Source files
-├── Drivers/                    # STM32F7 HAL drivers
-├── Middlewares/               # FreeRTOS files
-└── README.md
-```
+- Visual Studio Code
+- STM32 VSCode Extension
+- CMake
+- Ninja build system
+- ARM GCC toolchain
 
 ## Building and Running
 
-1. Clone the repository
-2. Open project in STM32CubeIDE
-3. Build the project
-4. Flash to NUCLEO-F756ZG board
-5. Monitor via serial terminal
+1. Clone the repository:
 
-## Usage
+```bash
+git clone https://github.com/elkanamol/f756_rtos_dispacher_RT.git
+```
 
-The system automatically generates emergency events which are handled by appropriate services. Monitor the response via UART output.
+1. Open in VSCode:
 
-## Configuration
+- Open VSCode
+- Install STM32 VSCode Extension
+- File -> Open Folder -> Select project folder
+- Select "Import CMake Project" when prompted
+- Select kit: "GCC ARM"
 
-Key configuration parameters in FreeRTOSConfig.h:
+1. Build:
 
-- Task priorities
-- Stack sizes
-- Queue lengths
-- System tick rate
+- Click "Build" button in VSCode status bar
+- Or use CMake: Build command
+
+1. Flash:
+
+- Connect NUCLEO-F756ZG
+- Click "Run" in VSCode
+- Monitor via serial terminal at 115200 baud
+
+## Key Features
+
+- FreeRTOS task management with proper error handling
+- Queue-based inter-task communication
+- Priority-based scheduling
+- Thread-safe printing mechanism
+- Robust task creation with configASSERT checks
+- CMake-based build system
+
+## Configurations
+
+Key configuration files:
+
+- `FreeRTOSConfig.h`: RTOS settings
+- `common.h`: System-wide constants
+- `CMakeLists.txt`: Build configuration
 
 ## Contributing
 
 1. Fork the repository
 2. Create feature branch
-3. Commit changes
-4. Push to branch
-5. Create Pull Request
+3. Follow FreeRTOS coding standards
+4. Use provided error handling patterns
+5. Submit Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - See LICENSE file
