@@ -110,6 +110,24 @@ Key configuration files:
 4. Use provided error handling patterns
 5. Submit Pull Request
 
+## Debug GPIO Mapping
+
+Debug pins for logic analyzer connection:
+
+- Event Management: PA3 (with LED1 indicator)
+- Dispatcher: PC0 (with LED2 indicator)
+- Police Events: PC3 (with LED3 indicator)
+- Ambulance Events: PF3
+- Fire Events: PF5
+- Corona Events: PF10
+
+### Enabling Debug Mode
+
+1. In common.h, ensure DEBUG_GPIO_TRACKING is defined
+2. Connect logic analyzer to specified pins
+3. Monitor pin state changes for event flow
+4. Measure timing between events
+
 ## License
 
 MIT License - See LICENSE file

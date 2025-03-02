@@ -30,7 +30,9 @@ void vEventManagementTask(void *pvParameters)
     for(;;)
     {
         BaseType_t xStasus = pdFALSE;
-        HAL_GPIO_TogglePin(GPIOB, LD1_Pin);
+        DEBUG_LED_TOGGLE(DEBUG_EVENT_MANAGEMENT_LED);
+        DEBUG_GPIO_ON(DEBUG_EVENT_MANAGEMENT_PORT, DEBUG_EVENT_MANAGEMENT_PIN);
+
         // starting with random delay time of 1-5 seconds
         const TickType_t xDelay = ((HAL_RNG_GetRandomNumber(&hrng) % DELADY_RANDOM_LIMIT) + 1) * portTICK_RATE_MS * TIME_FOR_DELAY;
         vTaskDelayUntil(&xLastWakeTime, xDelay);
@@ -61,8 +63,11 @@ void vEventManagementTask(void *pvParameters)
             }
             else
             {
+                DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
                 printf("Error: Failed to send event to dispacher queue\n");
+                DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
             }
+            DEBUG_GPIO_OFF(DEBUG_EVENT_MANAGEMENT_PORT, DEBUG_EVENT_MANAGEMENT_PIN);
         }
         vTaskDelay(xDelay);
     }

@@ -57,9 +57,6 @@ RNG_HandleTypeDef hrng;
 UART_HandleTypeDef huart3;
 
 /* Definitions for defaultTask */
-// this is the task that will be created by the RTOS
-// the task made simple hello world printf to check the execution
-// for debugging purposes only
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
@@ -118,7 +115,6 @@ int main(void)
   MX_RNG_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -142,8 +138,6 @@ int main(void)
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-
-  // Uncomment the following line if you want to use the defaultTask for debugging
   // defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -182,7 +176,7 @@ printf("------------------------------------------\n");
   osKernelStart();
 
   /* We should never get here as control is now taken by the scheduler */
-  print_deinit(); // deinit print only if the scheduler is failed.
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -317,11 +311,21 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOF, DEBUG_AMBULANCE_PIN_Pin | DEBUG_FIRE_PIN_Pin | DEBUG_CORONA_PIN_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, DEBUG_DISPATCHER_PIN_Pin | DEBUG_POLICE_PIN_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(DEBUG_EVENT_MANAGEMENT_PIN_GPIO_Port, DEBUG_EVENT_MANAGEMENT_PIN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LD1_Pin|LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
@@ -334,6 +338,20 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : DEBUG_AMBULANCE_PIN_Pin DEBUG_FIRE_PIN_Pin DEBUG_CORONA_PIN_Pin */
+  GPIO_InitStruct.Pin = DEBUG_AMBULANCE_PIN_Pin | DEBUG_FIRE_PIN_Pin | DEBUG_CORONA_PIN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : DEBUG_DISPATCHER_PIN_Pin DEBUG_POLICE_PIN_Pin */
+  GPIO_InitStruct.Pin = DEBUG_DISPATCHER_PIN_Pin | DEBUG_POLICE_PIN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : RMII_MDC_Pin RMII_RXD0_Pin RMII_RXD1_Pin */
   GPIO_InitStruct.Pin = RMII_MDC_Pin|RMII_RXD0_Pin|RMII_RXD1_Pin;
@@ -350,6 +368,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : DEBUG_EVENT_MANAGEMENT_PIN_Pin */
+  GPIO_InitStruct.Pin = DEBUG_EVENT_MANAGEMENT_PIN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(DEBUG_EVENT_MANAGEMENT_PIN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD1_Pin LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD1_Pin|LD3_Pin|LD2_Pin;
@@ -429,7 +454,10 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 {
   printf("Stack overflow in task: %s\n", pcTaskName);
   while (1)
-    ;
+  {
+    DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
+    HAL_Delay(100);
+  }
 }
 /**
  * @brief Callback function called when a memory allocation fails.
@@ -471,13 +499,6 @@ void monitorTaskStacks(void)
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
-/**
- * @brief this is the task that will be created by the RTOS
- * the task made simple hello world printf to check the execution 
- * for debugging purposes only
- *
- * @param argument
- */
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */

@@ -8,6 +8,7 @@
 #include "queue.h"
 #include "task.h"
 #include "semphr.h"
+#include "main.h"
 
 
 
@@ -34,7 +35,8 @@ void vDispacherTask(void *pvParameters)
     {
         if (xQueueReceive(xDispacherQueue, &recievedEvent, portMAX_DELAY) == pdTRUE)
         {
-            HAL_GPIO_TogglePin(GPIOB, LD2_Pin);
+            DEBUG_LED_TOGGLE(DEBUG_DISPATCHER_LED);
+            DEBUG_GPIO_ON(DEBUG_DISPATCHER_PORT, DEBUG_DISPATCHER_PIN);
 
             printf("Dispacher: Event recieved from dispacher queue: %d, %d, %ld\n"
                 , recievedEvent.eventCode
@@ -44,26 +46,34 @@ void vDispacherTask(void *pvParameters)
             switch (recievedEvent.eventCode)
             {
                 case EVENT_CODE_POLICE:
+                    DEBUG_GPIO_ON(DEBUG_POLICE_PORT, DEBUG_POLICE_PIN);
                     xQueueSend(xPoliceQueue, &recievedEvent, portMAX_DELAY);
                     printf("Dispatcher: sent event to police queue\n");
+                    DEBUG_GPIO_OFF(DEBUG_POLICE_PORT, DEBUG_POLICE_PIN);
                     break;
                 case EVENT_CODE_AMBULANCE:
+                    DEBUG_GPIO_ON(DEBUG_AMBULANCE_PORT, DEBUG_AMBULANCE_PIN);
                     xQueueSend(xAmbulanceQueue, &recievedEvent, portMAX_DELAY);
                     printf("Dispatcher: sent event to ambulance queue\n");
+                    DEBUG_GPIO_OFF(DEBUG_AMBULANCE_PORT, DEBUG_AMBULANCE_PIN);
                     break;
                 case EVENT_CODE_FIRE:
+                    DEBUG_GPIO_ON(DEBUG_FIRE_PORT, DEBUG_FIRE_PIN);
                     xQueueSend(xFireFighterQueue, &recievedEvent, portMAX_DELAY);
                     printf("Dispatcher: sent event to fire fighter queue\n");
+                    DEBUG_GPIO_OFF(DEBUG_FIRE_PORT, DEBUG_FIRE_PIN);
                     break;
                 case EVENT_CODE_CORONA:
+                    DEBUG_GPIO_ON(DEBUG_CORONA_PORT, DEBUG_CORONA_PIN);
                     xQueueSend(xCoronaQueue, &recievedEvent, portMAX_DELAY);
                     printf("Dispatcher: sent event to corona queue\n");
+                    DEBUG_GPIO_OFF(DEBUG_CORONA_PORT, DEBUG_CORONA_PIN);
                     break;
                 default:
                     printf("Error: Invalid event code\n");
                     break;
             }
-
+            DEBUG_GPIO_OFF(DEBUG_DISPATCHER_PORT, DEBUG_DISPATCHER_PIN);
         }
         vTaskDelay(1);
     }
