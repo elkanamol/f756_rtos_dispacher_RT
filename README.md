@@ -1,10 +1,15 @@
 # Emergency Services Dispatcher System
 
-Real-time emergency services dispatcher system implemented on STM32F7 using FreeRTOS, focusing on robust error handling and FreeRTOS best practices.
+A real-time emergency services dispatcher system was implemented on STM32F7 using FreeRTOS. It focused on robust error handling and FreeRTOS best practices.
+
+
+ <!-- ![ScreenRecording2025-03-02113321-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/21f90863-3c44-4d05-b84e-be9da5efa7e4) -->
+
+![ScreenRecording2025-03-02113321-ezgif com-optimize](https://github.com/user-attachments/assets/df630574-1ffd-4aa5-ba58-a85d36387ce1)
 
 ## Overview
 
-This project implements a multi-threaded emergency response system that coordinates different emergency services through a central dispatcher. Built on STM32F756ZG using FreeRTOS for real-time task management and CMake for build configuration.
+This project implements a multi-threaded emergency response system that coordinates different emergency services through a central dispatcher—built on STM32F756ZG using FreeRTOS for real-time task management and CMake for build configuration.
 
 ## Debug Features
 
@@ -19,9 +24,9 @@ This project implements a multi-threaded emergency response system that coordina
 Example output:
 
 ```c
-[1234][PrintTask][ERROR] Invalid priority
-[1234][DispatchTask][WARN] Resource count low: 2
-[1234][EventTask][INFO] Event processed: 1
+[1234][ERROR][PrintTask] Invalid priority
+[1234][WARN][DispatchTask] Resource count low: 2
+[1234][INFO][EventTask] Event processed: 1
 ```
 
 ### GPIO Debug Tracking
@@ -156,6 +161,9 @@ Key configuration files:
 2. Connect logic analyzer to specified pins
 3. Monitor pin state changes for event flow
 4. Measure timing between events
+
+![Screenshot 2025-03-02 113233](https://github.com/user-attachments/assets/85fb7c89-5788-43e0-9c68-6ac58902a528)
+
 
 ## License
 
