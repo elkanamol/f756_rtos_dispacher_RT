@@ -15,7 +15,7 @@ This project implements a multi-threaded emergency response system that coordina
 - **Central Dispatcher**: Routes events to appropriate emergency services based on event type
 - **Emergency Services**:
   - Police Department (Multiple police car tasks)
-  - Ambulance Service (Multiple ambulance car tasks) 
+  - Ambulance Service (Multiple ambulance car tasks)
   - Fire Department (Multiple fire truck tasks)
   - Corona Response Team (Multiple corona response tasks)
 - **Print Service**: Handles all UART output through a dedicated queue

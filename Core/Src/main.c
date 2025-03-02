@@ -414,6 +414,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
 /**
  * @brief Callback function called when a stack overflow is detected in a task.
  *
