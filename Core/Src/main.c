@@ -144,28 +144,28 @@ int main(void)
 /* add threads, ... */
 
 configASSERT(xPrintInit(TASK_DEFAULT_PRIORITY + 1) == pdPASS);
-DEBUG_PRINT("------------------------------------------\n");
+DEBUG_INFO("------------------------------------------\n");
 // Start the Dispatcher first (so its queue is ready)
 configASSERT(xStartDispacherTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-DEBUG_PRINT("Dispacher-------------------------------------\n");
+DEBUG_INFO("Dispacher-------------------------------------\n");
 
 // Start each department
 configASSERT(xStartPoliceTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-DEBUG_PRINT("Police-----------------------------------\n");
+DEBUG_INFO("Police-----------------------------------\n");
 
 configASSERT(xStartAmbulanceTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-DEBUG_PRINT("Ambulance----------------------------------\n");
+DEBUG_INFO("Ambulance----------------------------------\n");
 
 configASSERT(xStartFireFighterTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-DEBUG_PRINT("Fire-------------------------------------\n");
+DEBUG_INFO("Fire-------------------------------------\n");
 
 configASSERT(xStartCoronaTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-DEBUG_PRINT("Corona-------------------------------------\n");
+DEBUG_INFO("Corona-------------------------------------\n");
 
 // Start the Event Management (generates events)
 configASSERT(xStartEventManagementTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-DEBUG_PRINT("vStartEventManagementTask-----------------\n");
-DEBUG_PRINT("------------------------------------------\n");
+DEBUG_INFO("vStartEventManagementTask-----------------\n");
+DEBUG_INFO("------------------------------------------\n");
 /* USER CODE END RTOS_THREADS */
 
 /* USER CODE BEGIN RTOS_EVENTS */
@@ -452,7 +452,7 @@ static void MX_GPIO_Init(void)
  */
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 {
-  DEBUG_PRINT("Stack overflow in task: %s\n", pcTaskName);
+  DEBUG_INFO("Stack overflow in task: %s\n", pcTaskName);
   while (1)
   {
     DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
@@ -468,7 +468,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
  */
 void vApplicationMallocFailedHook(void)
 {
-  DEBUG_PRINT("Memory allocation failed!\n");
+  DEBUG_INFO("Memory allocation failed!\n");
   while (1)
     ;
 }
@@ -485,7 +485,7 @@ void monitorTaskStacks(void)
 
   // Check each task's remaining stack
   uxHighWaterMark = uxTaskGetStackHighWaterMark(defaultTaskHandle);
-  DEBUG_PRINT("Default Task Stack Remaining: %lu\n", uxHighWaterMark);
+  DEBUG_INFO("Default Task Stack Remaining: %lu\n", uxHighWaterMark);
 
   // Add similar checks for other tasks
 }
@@ -505,7 +505,7 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    DEBUG_PRINT("Hello World!\r\n");
+    DEBUG_INFO("Hello World!\r\n");
     osDelay(1000);
   }
   /* USER CODE END 5 */

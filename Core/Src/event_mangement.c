@@ -24,7 +24,7 @@ extern QueueHandle_t xDispacherQueue;
  */
 void vEventManagementTask(void *pvParameters)
 {
-    DEBUG_PRINT("Event Management Task Started\n");
+    DEBUG_INFO("Event Management Task Started\n");
 
     TickType_t xLastWakeTime = xTaskGetTickCount();
     for(;;)
@@ -59,12 +59,12 @@ void vEventManagementTask(void *pvParameters)
             }
             if (xStasus == pdTRUE)
             {
-                DEBUG_PRINT("Event sent to dispacher queue: %d, %d, %ld\n", event.eventCode, event.eventPriority, event.eventTime);
+                DEBUG_INFO("Event sent to dispacher queue: %d, %d, %ld\n", event.eventCode, event.eventPriority, event.eventTime);
             }
             else
             {
                 DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
-                DEBUG_PRINT("Error: Failed to send event to dispacher queue\n");
+                DEBUG_ERROR("Error: Failed to send event to dispacher queue\n");
                 DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
             }
             DEBUG_GPIO_OFF(DEBUG_EVENT_MANAGEMENT_PORT, DEBUG_EVENT_MANAGEMENT_PIN);
@@ -98,7 +98,7 @@ BaseType_t xStartEventManagementTask(UBaseType_t uxPriority)
                                          NULL);
     if (xTaskRetVal != pdPASS)
     {
-        DEBUG_PRINT("Error creating task EventManagementTask\n");
+        DEBUG_ERROR("Error creating task EventManagementTask\n");
         xReturn = pdFAIL;
     }
 

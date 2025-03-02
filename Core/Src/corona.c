@@ -27,10 +27,10 @@ static void vCoronaCarTask(void *pvParameters)
     {
         if (xQueueReceive(xCoronaQueue, &recievedEvent, portMAX_DELAY) == pdTRUE)
         {
-            DEBUG_PRINT("Corona car %d received event %d\n", carID, recievedEvent.eventCode);
+            DEBUG_INFO("Corona car %d received event %d\n", carID, recievedEvent.eventCode);
             TickType_t handlingTime = ((HAL_RNG_GetRandomNumber(&hrng) % DELADY_RANDOM_LIMIT) + 1) * TIME_FOR_DELAY;
             vTaskDelayUntil(&xLastWakeTime, handlingTime);
-            DEBUG_PRINT("Corona Car %d done in %lu Ticks\n", carID, (unsigned long)handlingTime);
+            DEBUG_INFO("Corona Car %d done in %lu Ticks\n", carID, (unsigned long)handlingTime);
         }
         vTaskDelay(1);
     }
@@ -56,7 +56,7 @@ BaseType_t xStartCoronaTask(UBaseType_t uxPriority)
     xCoronaQueue = xQueueCreate(CORONA_QUEUE_LENGTH, sizeof(EventMassage_t));
     if (xCoronaQueue == NULL)
     {
-        DEBUG_PRINT("Error creating corona queue\n");
+        DEBUG_ERROR("Error creating corona queue\n");
         return pdFAIL;
     }
 
@@ -73,7 +73,7 @@ BaseType_t xStartCoronaTask(UBaseType_t uxPriority)
                                            NULL);
         if (xTaskRetVal != pdPASS)
         {
-            DEBUG_PRINT("Error creating task %s\n", taskName);
+            DEBUG_ERROR("Error creating task %s\n", taskName);
             xReturn = pdFAIL;
             break;
         }
