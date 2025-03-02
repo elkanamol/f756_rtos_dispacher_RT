@@ -22,10 +22,10 @@ extern "C"
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "main.h"
-#include "stm32f7xx_hal.h"  // Add this include for RNG_HandleTypeDef
 #include "FreeRTOS.h"
-
+// #include "task.h" // This defines TickType_t
+#include "main.h"
+#include "stm32f7xx_hal.h"
 
 /**
  * @brief Defines related to event priority and task priority
@@ -54,40 +54,40 @@ extern "C"
 #define DELADY_RANDOM_LIMIT 5 // 1-5 seconds  
 #define CAR_RANDOM_LIMIT 4    // 1-4 carsID
 
-/**
-  * @brief event code enum that holds the event codes for the system 
-  * 
-  */
-typedef enum
-{
-    EVENT_CODE_POLICE    = 1,
+  /**
+   * @brief event code enum that holds the event codes for the system
+   *
+   */
+  typedef enum
+  {
+    EVENT_CODE_POLICE = 1,
     EVENT_CODE_AMBULANCE = 2,
-    EVENT_CODE_FIRE      = 3, 
-    EVENT_CODE_CORONA    = 4
-} EventCode_t;
+    EVENT_CODE_FIRE = 3,
+    EVENT_CODE_CORONA = 4
+  } EventCode_t;
 
-/**
-  * @brief enum that holds the priority of the event
-  * 
-  */
-typedef enum
-{
-    PRIORITY_LOW    = 1,
+  /**
+   * @brief enum that holds the priority of the event
+   *
+   */
+  typedef enum
+  {
+    PRIORITY_LOW = 1,
     PRIORITY_MEDIUM = 2,
-    PRIORITY_HIGH   = 3,
-} EventPriority_t;
+    PRIORITY_HIGH = 3,
+  } EventPriority_t;
 
-/**
-  * @brief Masasge stucture that holds the message data for events
-  * 
-  */
+  /**
+   * @brief Masasge stucture that holds the message data for events
+   *
+   */
 
-typedef struct
-{
+  typedef struct
+  {
     EventCode_t eventCode;
     EventPriority_t eventPriority;
     TickType_t eventTime;
-} EventMassage_t;
+  } EventMassage_t;
 
 /**
  * @brief Holds the resources of the system, including the counts of various emergency vehicles and other resources.
@@ -104,6 +104,17 @@ typedef struct
 
 
 extern RNG_HandleTypeDef hrng;  // RNG handle for random number generation. set at main.c
+
+void vDebugLedInit(void)
+{
+  DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
+  DEBUG_LED_TOGGLE(DEBUG_DISPATCHER_LED);
+  DEBUG_LED_TOGGLE(DEBUG_EVENT_MANAGEMENT_LED);
+  HAL_Delay(1000);
+  DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
+  DEBUG_LED_TOGGLE(DEBUG_DISPATCHER_LED);
+  DEBUG_LED_TOGGLE(DEBUG_EVENT_MANAGEMENT_LED);
+}
 
 #ifdef __cplusplus
 }
