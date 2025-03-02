@@ -28,7 +28,7 @@ extern QueueHandle_t xCoronaQueue;
  */
 void vDispacherTask(void *pvParameters)
 {
-    printf("Dispatcher Task Started\n");
+    DEBUG_PRINT("Dispatcher Task Started\n");
     EventMassage_t recievedEvent;
 
     for(;;)
@@ -38,39 +38,36 @@ void vDispacherTask(void *pvParameters)
             DEBUG_LED_TOGGLE(DEBUG_DISPATCHER_LED);
             DEBUG_GPIO_ON(DEBUG_DISPATCHER_PORT, DEBUG_DISPATCHER_PIN);
 
-            printf("Dispacher: Event recieved from dispacher queue: %d, %d, %ld\n"
-                , recievedEvent.eventCode
-                , recievedEvent.eventPriority
-                , recievedEvent.eventTime);
-            
+            DEBUG_PRINT("Dispacher: Event recieved from dispacher queue: %d, %d, %ld\n", recievedEvent.eventCode, recievedEvent.eventPriority, recievedEvent.eventTime);
+
             switch (recievedEvent.eventCode)
             {
                 case EVENT_CODE_POLICE:
                     DEBUG_GPIO_ON(DEBUG_POLICE_PORT, DEBUG_POLICE_PIN);
                     xQueueSend(xPoliceQueue, &recievedEvent, portMAX_DELAY);
-                    printf("Dispatcher: sent event to police queue\n");
+                    DEBUG_PRINT("Dispatcher: sent event to police queue\n");
                     DEBUG_GPIO_OFF(DEBUG_POLICE_PORT, DEBUG_POLICE_PIN);
                     break;
                 case EVENT_CODE_AMBULANCE:
                     DEBUG_GPIO_ON(DEBUG_AMBULANCE_PORT, DEBUG_AMBULANCE_PIN);
                     xQueueSend(xAmbulanceQueue, &recievedEvent, portMAX_DELAY);
-                    printf("Dispatcher: sent event to ambulance queue\n");
+                    DEBUG_PRINT("Dispatcher: sent event to ambulance queue\n");
                     DEBUG_GPIO_OFF(DEBUG_AMBULANCE_PORT, DEBUG_AMBULANCE_PIN);
                     break;
                 case EVENT_CODE_FIRE:
                     DEBUG_GPIO_ON(DEBUG_FIRE_PORT, DEBUG_FIRE_PIN);
                     xQueueSend(xFireFighterQueue, &recievedEvent, portMAX_DELAY);
-                    printf("Dispatcher: sent event to fire fighter queue\n");
+                    DEBUG_PRINT("Dispatcher: sent event to fire fighter queue\n");
                     DEBUG_GPIO_OFF(DEBUG_FIRE_PORT, DEBUG_FIRE_PIN);
                     break;
                 case EVENT_CODE_CORONA:
                     DEBUG_GPIO_ON(DEBUG_CORONA_PORT, DEBUG_CORONA_PIN);
                     xQueueSend(xCoronaQueue, &recievedEvent, portMAX_DELAY);
-                    printf("Dispatcher: sent event to corona queue\n");
+                    DEBUG_PRINT("Dispatcher: sent event to corona queue\n");
                     DEBUG_GPIO_OFF(DEBUG_CORONA_PORT, DEBUG_CORONA_PIN);
                     break;
                 default:
-                    printf("Error: Invalid event code\n");
+                    DEBUG_PRINT("Error: Invalid event code\n");
                     break;
             }
             DEBUG_GPIO_OFF(DEBUG_DISPATCHER_PORT, DEBUG_DISPATCHER_PIN);
@@ -98,7 +95,7 @@ BaseType_t xStartDispacherTask(UBaseType_t uxPriority)
     xDispacherQueue = xQueueCreate(DISPACHER_QUEUE_SIZE, sizeof(EventMassage_t));
     if (xDispacherQueue == NULL)
     {
-        printf("Error: Failed to create dispacher queue\n");
+        DEBUG_PRINT("Error: Failed to create dispacher queue\n");
         return pdFAIL;
     }
 
@@ -110,7 +107,7 @@ BaseType_t xStartDispacherTask(UBaseType_t uxPriority)
                                          NULL);
     if (xTaskRetVal != pdPASS)
     {
-        printf("Error creating task DispacherTask\n");
+        DEBUG_PRINT("Error creating task DispacherTask\n");
         xReturn = pdFAIL;
     }
 

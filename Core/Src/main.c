@@ -144,46 +144,46 @@ int main(void)
 /* add threads, ... */
 
 configASSERT(xPrintInit(TASK_DEFAULT_PRIORITY + 1) == pdPASS);
-printf("------------------------------------------\n");
+DEBUG_PRINT("------------------------------------------\n");
 // Start the Dispatcher first (so its queue is ready)
 configASSERT(xStartDispacherTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-printf("Dispacher-------------------------------------\n");
+DEBUG_PRINT("Dispacher-------------------------------------\n");
 
 // Start each department
 configASSERT(xStartPoliceTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-printf("Police-----------------------------------\n");
+DEBUG_PRINT("Police-----------------------------------\n");
 
 configASSERT(xStartAmbulanceTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-printf("Ambulance----------------------------------\n");
+DEBUG_PRINT("Ambulance----------------------------------\n");
 
 configASSERT(xStartFireFighterTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-printf("Fire-------------------------------------\n");
+DEBUG_PRINT("Fire-------------------------------------\n");
 
 configASSERT(xStartCoronaTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-printf("Corona-------------------------------------\n");
+DEBUG_PRINT("Corona-------------------------------------\n");
 
 // Start the Event Management (generates events)
 configASSERT(xStartEventManagementTask(TASK_DEFAULT_PRIORITY) == pdPASS);
-printf("vStartEventManagementTask-----------------\n");
-printf("------------------------------------------\n");
-  /* USER CODE END RTOS_THREADS */
+DEBUG_PRINT("vStartEventManagementTask-----------------\n");
+DEBUG_PRINT("------------------------------------------\n");
+/* USER CODE END RTOS_THREADS */
 
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
+/* USER CODE BEGIN RTOS_EVENTS */
+/* add events, ... */
+/* USER CODE END RTOS_EVENTS */
 
-  /* Start scheduler */
-  osKernelStart();
+/* Start scheduler */
+osKernelStart();
 
-  /* We should never get here as control is now taken by the scheduler */
+/* We should never get here as control is now taken by the scheduler */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
+/* Infinite loop */
+/* USER CODE BEGIN WHILE */
+while (1)
+{
+  /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
+  /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
@@ -452,7 +452,7 @@ static void MX_GPIO_Init(void)
  */
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 {
-  printf("Stack overflow in task: %s\n", pcTaskName);
+  DEBUG_PRINT("Stack overflow in task: %s\n", pcTaskName);
   while (1)
   {
     DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
@@ -468,7 +468,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
  */
 void vApplicationMallocFailedHook(void)
 {
-  printf("Memory allocation failed!\n");
+  DEBUG_PRINT("Memory allocation failed!\n");
   while (1)
     ;
 }
@@ -485,7 +485,7 @@ void monitorTaskStacks(void)
 
   // Check each task's remaining stack
   uxHighWaterMark = uxTaskGetStackHighWaterMark(defaultTaskHandle);
-  printf("Default Task Stack Remaining: %lu\n", uxHighWaterMark);
+  DEBUG_PRINT("Default Task Stack Remaining: %lu\n", uxHighWaterMark);
 
   // Add similar checks for other tasks
 }
@@ -505,7 +505,7 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    printf("Hello World!\r\n");
+    DEBUG_PRINT("Hello World!\r\n");
     osDelay(1000);
   }
   /* USER CODE END 5 */

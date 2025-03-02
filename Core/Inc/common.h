@@ -47,12 +47,21 @@ extern "C"
 #define EVENT_SET_PRIORITY         // if defined, the event manager will generate random priority
 #define TASK_DEFAULT_PRIORITY 0    // default priority for all the tasks
 
-#define TIME_FOR_DELAY 100                    // time for delay between the calls, wainting factors etc. in ms, 100 ms
+#define TIME_FOR_DELAY 10                     // time for delay between the calls, wainting factors etc. in ms, 100 ms
 #define STACK_SIZE_TIMES_MINIMAL_STACK_SIZE 2 // 2 times the minimal stack size
 #define DEPART_TASK_STACK_SIZE configMINIMAL_STACK_SIZE * STACK_SIZE_TIMES_MINIMAL_STACK_SIZE // 2 times the minimal stack size
 
 #define DELADY_RANDOM_LIMIT 5 // 1-5 seconds  
 #define CAR_RANDOM_LIMIT 4    // 1-4 carsID
+
+  /* Debug Print Configuration */
+  #define DEBUG_PRINT_ENABLED // Comment out to disable all printf statements
+
+#ifdef DEBUG_PRINT_ENABLED
+#define DEBUG_PRINT(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#else
+#define DEBUG_PRINT(fmt, ...) ((void)0)
+#endif
 
   /**
    * @brief event code enum that holds the event codes for the system

@@ -25,16 +25,13 @@ static void vAmbulanceCarTask(void *pvParameters)
     {
         if (xQueueReceive(xAmbulanceQueue, &recievedEvent, portMAX_DELAY) == pdTRUE)
         {
-            printf("Ambulance car %d received event %d\n"
-                , carID
-                , recievedEvent.eventCode);
+            DEBUG_PRINT("Ambulance car %d received event %d\n", carID, recievedEvent.eventCode);
 
             TickType_t handlingTime = ((HAL_RNG_GetRandomNumber(&hrng) % DELADY_RANDOM_LIMIT) + 1) * TIME_FOR_DELAY;
             
             vTaskDelayUntil(&xLastWakeTime, handlingTime);
 
-            printf("Ambulance Car %d done in %lu Ticks\n", carID, (unsigned long)handlingTime);
-
+            DEBUG_PRINT("Ambulance Car %d done in %lu Ticks\n", carID, (unsigned long)handlingTime);
         }
         vTaskDelay(1);
     }
@@ -60,7 +57,7 @@ BaseType_t xStartAmbulanceTask(UBaseType_t uxPriority)
     xAmbulanceQueue = xQueueCreate(AMBULANCE_QUEUE_LENGTH, sizeof(EventMassage_t));
     if (xAmbulanceQueue == NULL)
     {
-        printf("The xAmbulanceQueue cannot create");
+        DEBUG_PRINT("The xAmbulanceQueue cannot create");
         return pdFAIL;
     }
 
@@ -77,7 +74,7 @@ BaseType_t xStartAmbulanceTask(UBaseType_t uxPriority)
                                            NULL);
         if (xTaskRetVal != pdPASS)
         {
-            printf("Error creating task %s\n", taskName);
+            DEBUG_PRINT("Error creating task %s\n", taskName);
             xReturn = pdFAIL;
             break;
         }

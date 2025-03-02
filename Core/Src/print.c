@@ -130,7 +130,7 @@
    */
   void print_error(const char * msg)
   {
-      printf("ERROR: %s\n", msg);
+      DEBUG_PRINT("ERROR: %s\n", msg);
       for(;;);
   }
 

@@ -25,12 +25,10 @@ void vFireCarTask(void *pvParameters)
     {
         if (xQueueReceive(xFireFighterQueue, &recievedEvent, portMAX_DELAY) == pdTRUE)
         {
-            printf("Fire fighter car %d received event %d\n"
-                 ,carID
-                 , recievedEvent.eventCode);
+            DEBUG_PRINT("Fire fighter car %d received event %d\n", carID, recievedEvent.eventCode);
             TickType_t handlingTime = ((HAL_RNG_GetRandomNumber(&hrng) % DELADY_RANDOM_LIMIT) + 1) * TIME_FOR_DELAY;
             vTaskDelayUntil(&xLastWakeTime, handlingTime);
-            printf("FireFighter Car %d done in %lu Ticks\n", carID, (unsigned long)handlingTime);
+            DEBUG_PRINT("FireFighter Car %d done in %lu Ticks\n", carID, (unsigned long)handlingTime);
         }
         vTaskDelay(1);
     }
@@ -56,7 +54,7 @@ BaseType_t xStartFireFighterTask(UBaseType_t uxPriority)
     xFireFighterQueue = xQueueCreate(FIREFIGHTER_QUEUE_LENGTH, sizeof(EventMassage_t));
     if(xFireFighterQueue == NULL)
     {
-        printf("Error creating fire fighter queue\n");
+        DEBUG_PRINT("Error creating fire fighter queue\n");
         return pdFAIL;
     }
 
@@ -73,7 +71,7 @@ BaseType_t xStartFireFighterTask(UBaseType_t uxPriority)
                                              NULL);
         if (xTaskRetVal != pdPASS)
         {
-            printf("Error creating task %s\n", taskName);
+            DEBUG_PRINT("Error creating task %s\n", taskName);
             xReturn = pdFAIL;
             break;
         }

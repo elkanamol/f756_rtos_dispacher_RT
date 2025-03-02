@@ -31,12 +31,10 @@ static void vPoliceCarTask(void *pvParameters)
     {
         if (xQueueReceive(xPoliceQueue, &recievedEvent, portMAX_DELAY) == pdTRUE)
         {
-            printf("Police car %d received event %d\n"
-                 ,carID
-                 , recievedEvent.eventCode);
+            DEBUG_PRINT("Police car %d received event %d\n", carID, recievedEvent.eventCode);
             handlingTime = ((HAL_RNG_GetRandomNumber(&hrng) % DELADY_RANDOM_LIMIT) + 1) * TIME_FOR_DELAY;
             vTaskDelayUntil(&xLastWakeTime, handlingTime);
-            printf("Police Car %d done in %lu Ticks\n", carID, (unsigned long)handlingTime);
+            DEBUG_PRINT("Police Car %d done in %lu Ticks\n", carID, (unsigned long)handlingTime);
         }
         vTaskDelay(1);
     }
@@ -62,7 +60,7 @@ BaseType_t xStartPoliceTask(UBaseType_t uxPriority)
     xPoliceQueue = xQueueCreate(POLICE_QUEUE_SIZE, sizeof(EventMassage_t));
     if (xPoliceQueue == NULL)
     {
-        printf("Error creating police queue\n");
+        DEBUG_PRINT("Error creating police queue\n");
         return pdFAIL;
     }
 
@@ -79,7 +77,7 @@ BaseType_t xStartPoliceTask(UBaseType_t uxPriority)
                                            NULL);
         if (xTaskRetVal != pdPASS)
         {
-            printf("Error creating task %s\n", taskName);
+            DEBUG_PRINT("Error creating task %s\n", taskName);
             xReturn = pdFAIL;
             break;
         }
