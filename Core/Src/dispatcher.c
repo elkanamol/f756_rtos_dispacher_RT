@@ -36,7 +36,7 @@ void vDispacherTask(void *pvParameters)
         if (xQueueReceive(xDispacherQueue, &recievedEvent, portMAX_DELAY) == pdTRUE)
         {
             DEBUG_LED_TOGGLE(DEBUG_DISPATCHER_LED);
-            DEBUG_GPIO_TOGGLE(DEBUG_DISPATCHER_PORT, DEBUG_DISPATCHER_PIN);
+            DEBUG_GPIO_ON(DEBUG_DISPATCHER_PORT, DEBUG_DISPATCHER_PIN);
 
             printf("Dispacher: Event recieved from dispacher queue: %d, %d, %ld\n"
                 , recievedEvent.eventCode
@@ -73,7 +73,7 @@ void vDispacherTask(void *pvParameters)
                     printf("Error: Invalid event code\n");
                     break;
             }
-
+            DEBUG_GPIO_OFF(DEBUG_DISPATCHER_PORT, DEBUG_DISPATCHER_PIN);
         }
         vTaskDelay(1);
     }

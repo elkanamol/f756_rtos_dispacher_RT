@@ -115,7 +115,6 @@ int main(void)
   MX_RNG_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  vDebugLedInit();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -139,7 +138,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  // defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
 /* add threads, ... */

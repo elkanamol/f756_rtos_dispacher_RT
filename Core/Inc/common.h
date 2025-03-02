@@ -105,16 +105,6 @@ typedef struct
 
 extern RNG_HandleTypeDef hrng;  // RNG handle for random number generation. set at main.c
 
-void vDebugLedInit(void)
-{
-  DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
-  DEBUG_LED_TOGGLE(DEBUG_DISPATCHER_LED);
-  DEBUG_LED_TOGGLE(DEBUG_EVENT_MANAGEMENT_LED);
-  HAL_Delay(1000);
-  DEBUG_LED_TOGGLE(DEBUG_ERROR_LED);
-  DEBUG_LED_TOGGLE(DEBUG_DISPATCHER_LED);
-  DEBUG_LED_TOGGLE(DEBUG_EVENT_MANAGEMENT_LED);
-}
 
 #ifdef __cplusplus
 }
