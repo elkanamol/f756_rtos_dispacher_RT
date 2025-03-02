@@ -1,7 +1,6 @@
 # Emergency Services Dispatcher System
 
 Real-time emergency services dispatcher system implemented on STM32F7 using FreeRTOS, focusing on robust error handling and FreeRTOS best practices.
-s
 
 ## Overview
 
@@ -20,12 +19,32 @@ This project implements a multi-threaded emergency response system that coordina
   - Corona Response Team (Multiple corona response tasks)
 - **Print Service**: Handles all UART output through a dedicated queue
 
+### Debug Features
+
+#### GPIO Debug Tracking
+
+- Event Management: PA3 (with LED1 indicator)
+- Dispatcher: PC0 (with LED2 indicator)
+- Police Events: PC3 (with LED3 indicator)
+- Ambulance Events: PF3
+- Fire Events: PF5
+- Corona Events: PF10
+
+Enable/Disable via `DEBUG_GPIO_TRACKING` in main.h
+
+#### Debug Print System
+
+- Thread-safe printf functionality through print queue
+- Enable/Disable via `DEBUG_PRINT_ENABLED` in common.h
+- Uses `DEBUG_PRINT()` macro for all debug messages
+- Zero overhead when disabled
+
 ### Source Files Structure
 
 #### Core/Inc/
 
 - `ambulance.h`: Ambulance service declarations and configurations
-- `common.h`: Shared definitions and constants
+- `common.h`: Shared definitions, constants, and debug configurations
 - `corona.h`: Corona response team interface
 - `dispatcher.h`: Central event dispatcher declarations
 - `event_management.h`: Event generation system interface
@@ -110,23 +129,21 @@ Key configuration files:
 4. Use provided error handling patterns
 5. Submit Pull Request
 
-## Debug GPIO Mapping
+## Debug Configuration
 
-Debug pins for logic analyzer connection:
+### GPIO Debug Tracking
 
-- Event Management: PA3 (with LED1 indicator)
-- Dispatcher: PC0 (with LED2 indicator)
-- Police Events: PC3 (with LED3 indicator)
-- Ambulance Events: PF3
-- Fire Events: PF5
-- Corona Events: PF10
-
-### Enabling Debug Mode
-
-1. In common.h, ensure DEBUG_GPIO_TRACKING is defined
+1. In main.h, ensure `DEBUG_GPIO_TRACKING` is defined
 2. Connect logic analyzer to specified pins
 3. Monitor pin state changes for event flow
 4. Measure timing between events
+
+### Print Debug System
+
+1. In common.h, ensure `DEBUG_PRINT_ENABLED` is defined
+2. Use `DEBUG_PRINT()` for debug messages
+3. Monitor via serial terminal at 115200 baud
+4. Disable by commenting out `DEBUG_PRINT_ENABLED`
 
 ## License
 
