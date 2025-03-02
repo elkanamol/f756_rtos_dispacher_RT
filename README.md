@@ -6,6 +6,35 @@ Real-time emergency services dispatcher system implemented on STM32F7 using Free
 
 This project implements a multi-threaded emergency response system that coordinates different emergency services through a central dispatcher. Built on STM32F756ZG using FreeRTOS for real-time task management and CMake for build configuration.
 
+## Debug Features
+
+### Multi-Level Debug System
+
+- Three severity levels: ERROR, WARNING, INFO
+- Automatic timestamps and task names
+- Format: `[TickCount][TaskName][Level] Message`
+- Enable/Disable via `DEBUG_PRINT_ENABLED` in common.h
+- Zero overhead when disabled
+
+Example output:
+
+```c
+[1234][PrintTask][ERROR] Invalid priority
+[1234][DispatchTask][WARN] Resource count low: 2
+[1234][EventTask][INFO] Event processed: 1
+```
+
+### GPIO Debug Tracking
+
+- Event Management: PA3 (with LED1 indicator)
+- Dispatcher: PC0 (with LED2 indicator)
+- Police Events: PC3 (with LED3 indicator)
+- Ambulance Events: PF3
+- Fire Events: PF5
+- Corona Events: PF10
+
+Enable/Disable via `DEBUG_GPIO_TRACKING` in main.h
+
 ## Architecture
 
 ### Core Components
@@ -18,26 +47,6 @@ This project implements a multi-threaded emergency response system that coordina
   - Fire Department (Multiple fire truck tasks)
   - Corona Response Team (Multiple corona response tasks)
 - **Print Service**: Handles all UART output through a dedicated queue
-
-### Debug Features
-
-#### GPIO Debug Tracking
-
-- Event Management: PA3 (with LED1 indicator)
-- Dispatcher: PC0 (with LED2 indicator)
-- Police Events: PC3 (with LED3 indicator)
-- Ambulance Events: PF3
-- Fire Events: PF5
-- Corona Events: PF10
-
-Enable/Disable via `DEBUG_GPIO_TRACKING` in main.h
-
-#### Debug Print System
-
-- Thread-safe printf functionality through print queue
-- Enable/Disable via `DEBUG_PRINT_ENABLED` in common.h
-- Uses `DEBUG_PRINT()` macro for all debug messages
-- Zero overhead when disabled
 
 ### Source Files Structure
 
@@ -131,19 +140,22 @@ Key configuration files:
 
 ## Debug Configuration
 
-### GPIO Debug Tracking
+### Print Debug System
+
+1. In common.h, ensure `DEBUG_PRINT_ENABLED` is defined
+2. Use debug macros for messages:
+   - `DEBUG_ERROR()` for critical issues
+   - `DEBUG_WARNING()` for potential problems
+   - `DEBUG_INFO()` for general information
+3. Monitor via serial terminal at 115200 baud
+4. Disable by commenting out `DEBUG_PRINT_ENABLED`
+
+### Using GPIO Debug Tracking
 
 1. In main.h, ensure `DEBUG_GPIO_TRACKING` is defined
 2. Connect logic analyzer to specified pins
 3. Monitor pin state changes for event flow
 4. Measure timing between events
-
-### Print Debug System
-
-1. In common.h, ensure `DEBUG_PRINT_ENABLED` is defined
-2. Use `DEBUG_PRINT()` for debug messages
-3. Monitor via serial terminal at 115200 baud
-4. Disable by commenting out `DEBUG_PRINT_ENABLED`
 
 ## License
 
