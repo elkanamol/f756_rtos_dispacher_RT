@@ -1,57 +1,10 @@
 # Emergency Services Dispatcher System
 
-A real-time emergency services dispatcher system was implemented on STM32F7 using FreeRTOS. It focused on robust error handling and FreeRTOS best practices.
+## About
 
-
- <!-- ![ScreenRecording2025-03-02113321-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/21f90863-3c44-4d05-b84e-be9da5efa7e4) -->
+A real-time emergency services dispatcher system implemented on STM32F756ZG using FreeRTOS. The system simulates emergency response coordination with multiple services (Police, Ambulance, Fire, Corona) handling events based on priorities. It demonstrates robust task management, inter-task communication, and hardware-specific features like RNG for realistic event timing.
 
 ![ScreenRecording2025-03-02113321-ezgif com-optimize](https://github.com/user-attachments/assets/df630574-1ffd-4aa5-ba58-a85d36387ce1)
-
-## Overview
-
-This project implements a multi-threaded emergency response system that coordinates different emergency services through a central dispatcher—built on STM32F756ZG using FreeRTOS for real-time task management and CMake for build configuration.
-
-## Debug Features
-
-### Multi-Level Debug System
-
-- Three severity levels: ERROR, WARNING, INFO
-- Automatic timestamps and task names
-- Format: `[TickCount][TaskName][Level] Message`
-- Enable/Disable via `DEBUG_PRINT_ENABLED` in common.h
-- Zero overhead when disabled
-
-Example output:
-
-```c
-[1234][ERROR][PrintTask] Invalid priority
-[1234][WARN][DispatchTask] Resource count low: 2
-[1234][INFO][EventTask] Event processed: 1
-```
-
-### GPIO Debug Tracking
-
-- Event Management: PA3 (with LED1 indicator)
-- Dispatcher: PC0 (with LED2 indicator)
-- Police Events: PC3 (with LED3 indicator)
-- Ambulance Events: PF3
-- Fire Events: PF5
-- Corona Events: PF10
-
-Enable/Disable via `DEBUG_GPIO_TRACKING` in main.h
-
-## Architecture
-
-### Core Components
-
-- **Event Management**: Generates emergency events with different priorities and types
-- **Central Dispatcher**: Routes events to appropriate emergency services based on event type
-- **Emergency Services**:
-  - Police Department (Multiple police car tasks)
-  - Ambulance Service (Multiple ambulance car tasks)
-  - Fire Department (Multiple fire truck tasks)
-  - Corona Response Team (Multiple corona response tasks)
-- **Print Service**: Handles all UART output through a dedicated queue
 
 ### Source Files Structure
 
@@ -77,19 +30,110 @@ Enable/Disable via `DEBUG_GPIO_TRACKING` in main.h
 - `print.c`: Thread-safe print service
 - `main.c`: System initialization and task creation
 
-## Hardware Requirements
+## Key Features
 
-- NUCLEO-F756ZG board
-- ST-Link debugger
-- Serial terminal (115200 baud)
+- FreeRTOS task management with comprehensive error handling
+- Hardware RNG-based random timing for realistic event simulation
+- Multi-level debug system with GPIO tracking
+- Memory management monitoring and overflow protection
+- Queue-based inter-task communication
+- Priority-based scheduling
+- Thread-safe printing mechanism
 
-## Software Requirements
+## System Architecture
+
+[Pinout/Scheme layout placeholder]
+
+### Core Components
+
+- **Event Management**: Generates emergency events with different priorities and types
+- **Central Dispatcher**: Routes events to appropriate emergency services based on event type
+- **Emergency Services**:
+  - Police Department (Multiple police car tasks)
+  - Ambulance Service (Multiple ambulance car tasks)
+  - Fire Department (Multiple fire truck tasks)
+  - Corona Response Team (Multiple corona response tasks)
+- **Print Service**: Handles all UART output through a dedicated queue
+
+### Random Number Generation
+
+The system uses STM32F7's hardware RNG module to generate random delays between events, making the simulation more realistic:
+
+```c
+const TickType_t xDelay = ((HAL_RNG_GetRandomNumber(&hrng) % DELADY_RANDOM_LIMIT) + 1) * portTICK_RATE_MS * TIME_FOR_DELAY;
+```
+
+## Debug Features
+
+### Memory Management
+
+- Stack overflow detection enabled via `configCHECK_FOR_STACK_OVERFLOW`
+- Memory allocation failure handling
+- Runtime stack usage monitoring
+- Located in:
+  - Implementation: `main.c` (lines 443-491)
+  - Configuration: `FreeRTOSConfig.h` (lines 155-156)
+
+### Multi-Level Debug System
+
+Debug output format: `[TickCount][TaskName][Level] Message`
+
+Example outputs:
+
+```bash
+[1234][DispatchTask][ERROR] Stack overflow detected
+[5678][EventTask][WARNING] Queue nearly full: 80% capacity
+[9012][PrintTask][INFO] Processing event type: EMERGENCY_HIGH
+```
+
+Configuration in `common.h`:
+
+```c
+#define DEBUG_PRINT_ENABLED
+#define DEBUG_GPIO_TRACKING
+```
+
+- Three severity levels: ERROR, WARNING, INFO
+- Automatic timestamps and task names
+- Enable/Disable via `DEBUG_PRINT_ENABLED` in common.h
+- Zero overhead when disabled
+
+### GPIO Debug Tracking
+
+- Event Management: PA3 (with LED1 indicator)
+- Dispatcher: PC0 (with LED2 indicator)
+- Police Events: PC3 (with LED3 indicator)
+- Ambulance Events: PF3
+- Fire Events: PF5
+- Corona Events: PF10
+
+Enable/Disable via `DEBUG_GPIO_TRACKING` in main.h
+
+## Setup Instructions
+
+### Prerequisites
 
 - Visual Studio Code
-- STM32 VSCode Extension
+- ARM GCC toolchain
 - CMake
 - Ninja build system
-- ARM GCC toolchain
+
+### Installing STM32 VS Code Extension
+
+1. Visit [STM32 VS Code Extension](https://marketplace.visualstudio.com/items?itemName=stmicroelectronics.stm32-vscode-extension)
+2. Install the extension following marketplace instructions
+
+### Project Import Process
+
+1. Use STM32 VS Code Extension's "Import CMake Project" feature
+2. The extension will:
+   - Check for required JSON files
+   - Generate configuration if needed
+   - Present project summary
+3. Choose project opening method:
+   - Add to current window
+   - Open in new VS Code session
+   - Add to existing workspace
 
 ## Building and Running
 
@@ -118,22 +162,11 @@ git clone https://github.com/elkanamol/f756_rtos_dispacher_RT.git
 - Click "Run" in VSCode
 - Monitor via serial terminal at 115200 baud
 
-## Key Features
+## Hardware Requirements
 
-- FreeRTOS task management with proper error handling
-- Queue-based inter-task communication
-- Priority-based scheduling
-- Thread-safe printing mechanism
-- Robust task creation with configASSERT checks
-- CMake-based build system
-
-## Configurations
-
-Key configuration files:
-
-- `FreeRTOSConfig.h`: RTOS settings
-- `common.h`: System-wide constants
-- `CMakeLists.txt`: Build configuration
+- NUCLEO-F756ZG board
+- ST-Link debugger
+- Serial terminal (115200 baud)
 
 ## Contributing
 
@@ -142,28 +175,6 @@ Key configuration files:
 3. Follow FreeRTOS coding standards
 4. Use provided error handling patterns
 5. Submit Pull Request
-
-## Debug Configuration
-
-### Print Debug System
-
-1. In common.h, ensure `DEBUG_PRINT_ENABLED` is defined
-2. Use debug macros for messages:
-   - `DEBUG_ERROR()` for critical issues
-   - `DEBUG_WARNING()` for potential problems
-   - `DEBUG_INFO()` for general information
-3. Monitor via serial terminal at 115200 baud
-4. Disable by commenting out `DEBUG_PRINT_ENABLED`
-
-### Using GPIO Debug Tracking
-
-1. In main.h, ensure `DEBUG_GPIO_TRACKING` is defined
-2. Connect logic analyzer to specified pins
-3. Monitor pin state changes for event flow
-4. Measure timing between events
-
-![Screenshot 2025-03-02 113233](https://github.com/user-attachments/assets/85fb7c89-5788-43e0-9c68-6ac58902a528)
-
 
 ## License
 
