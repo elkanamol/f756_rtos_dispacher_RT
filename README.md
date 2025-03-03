@@ -42,6 +42,9 @@ A real-time emergency services dispatcher system implemented on STM32F756ZG usin
 
 ## System Architecture
 
+![Dispacher_diagram_2](https://github.com/user-attachments/assets/d9148a29-4992-4ed5-af31-a311da39eb7d)
+
+
 ![nucleo_f746zg_zio_left_2022_10_19_V6L6hlp](https://github.com/user-attachments/assets/eac6f072-31c2-4fd9-a0fb-a08c030781f6)
 
 ### Core Components
