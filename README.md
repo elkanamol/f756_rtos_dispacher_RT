@@ -42,7 +42,7 @@ A real-time emergency services dispatcher system implemented on STM32F756ZG usin
 
 ## System Architecture
 
-[Pinout/Scheme layout placeholder]
+![nucleo_f746zg_zio_left_2022_10_19_V6L6hlp](https://github.com/user-attachments/assets/eac6f072-31c2-4fd9-a0fb-a08c030781f6)
 
 ### Core Components
 
@@ -109,6 +109,13 @@ Configuration in `common.h`:
 
 Enable/Disable via `DEBUG_GPIO_TRACKING` in main.h
 
+## Hardware Requirements
+
+- NUCLEO-F756ZG board
+- ST-Link debugger
+- Serial terminal (115200 baud)
+- Logic Analyzer at least 8 I/O ports (Optional)
+
 ## Setup Instructions
 
 ### Prerequisites
@@ -117,6 +124,33 @@ Enable/Disable via `DEBUG_GPIO_TRACKING` in main.h
 - ARM GCC toolchain
 - CMake
 - Ninja build system
+
+## Building and Running
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/elkanamol/f756_rtos_dispacher_RT.git
+```
+
+1. Open in VSCode:
+
+- Open VSCode
+- Open STM32 VSCode Extension (If isn't insalled yet, follow "Installing STM32 VS Code Extension" instructions)
+- Select "Import CMake Project" when prompted
+- File -> Open Folder -> Select project folder
+- Select kit: "GCC ARM"
+
+1. Build:
+
+- Click "Build" button in VSCode status bar
+- Or use CMake: Build command
+
+1. Flash:
+
+- Connect NUCLEO-F756ZG
+- Click "Run" in VSCode
+- Monitor via serial terminal at 115200 baud
 
 ### Installing STM32 VS Code Extension
 
@@ -134,39 +168,6 @@ Enable/Disable via `DEBUG_GPIO_TRACKING` in main.h
    - Add to current window
    - Open in new VS Code session
    - Add to existing workspace
-
-## Building and Running
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/elkanamol/f756_rtos_dispacher_RT.git
-```
-
-1. Open in VSCode:
-
-- Open VSCode
-- Install STM32 VSCode Extension
-- File -> Open Folder -> Select project folder
-- Select "Import CMake Project" when prompted
-- Select kit: "GCC ARM"
-
-1. Build:
-
-- Click "Build" button in VSCode status bar
-- Or use CMake: Build command
-
-1. Flash:
-
-- Connect NUCLEO-F756ZG
-- Click "Run" in VSCode
-- Monitor via serial terminal at 115200 baud
-
-## Hardware Requirements
-
-- NUCLEO-F756ZG board
-- ST-Link debugger
-- Serial terminal (115200 baud)
 
 ## Contributing
 
